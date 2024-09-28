@@ -1,4 +1,4 @@
-Aim
+![WhatsApp Image 2024-09-26 at 14 52 38_e90fb978](https://github.com/user-attachments/assets/9e614788-39bc-4260-bd2a-c7ba3bf8c301)Aim
 To design and simulate a seven-segment display driver using Verilog HDL, and verify its functionality through a testbench in the Vivado 2023.1 environment. The objective is to implement the logic that converts a 4-bit binary input into the corresponding 7-segment display output for the digits 0 to 9.
 
 Apparatus Required
@@ -36,70 +36,64 @@ Diagram
 Verilog Code for Seven-Segment Display
 
 // seven_segment_display.v
-module seven_segment_display (
-    input wire [3:0] binary_input,
-    output reg [6:0] seg_output
-);
-    always @(*) begin
-        case (binary_input)
-            4'b0000: seg_output = 7'b0111111; // 0
-            4'b0001: seg_output = 7'b0000110; // 1
-            4'b0010: seg_output = 7'b1011011; // 2
-            4'b0013: seg_output = 7'b1001111; // 3
-            4'b0100: seg_output = 7'b1100110; // 4
-            4'b0101: seg_output = 7'b1101101; // 5
-            4'b0110: seg_output = 7'b1111101; // 6
-            4'b0111: seg_output = 7'b0000111; // 7
-            4'b1000: seg_output = 7'b1111111; // 8
-            4'b1001: seg_output = 7'b1101111; // 9
-            default: seg_output = 7'b0000000; // blank or error
-        endcase
-    end
+module sevensegment;
+reg[3:0]bcd;
+wire[6:0]seg;
+sevensegment uut(.bcd(bcd),.seg(seg));
+initial begin
+bcd=4'b0000;
+#2 bcd=4'b0000;
+#2 bcd=4'b0001;
+#2 bcd=4'b0010;
+#2 bcd=4'b0011;
+#2 bcd=4'b0100;
+#2 bcd=4'b0101;
+#2 bcd=4'b0110;
+#2 bcd=4'b0111;
+#2 bcd=4'b1000;
+#2 bcd=4'b1001;
+#2 $stop;
+end
 endmodule
+OUTPUT:![7segment](https://github.com/user-attachments/assets/071a068d-eb7d-4a42-a4bd-ffe599154cd8)
 
 
 Testbench for Seven-Segment Display:
 
-// seven_segment_display_tb.v
 `timescale 1ns / 1ps
 
-module seven_segment_display_tb;
-    // Inputs
-    reg [3:0] binary_input;
+module multiplexer_tb;
+  // Declare inputs as reg and outputs as wire
+  reg s1, s0, a, b, c, d;
+  wire y;
 
-    // Outputs
-    wire [6:0] seg_output;
+  // Instantiate the multiplexer module
+  multiplexer uut (
+    .s1(s1), 
+    .s0(s0), 
+    .a(a), 
+    .b(b), 
+    .c(c), 
+    .d(d), 
+    .y(y)
+  );
 
-    // Instantiate the Unit Under Test (UUT)
-    seven_segment_display uut (
-        .binary_input(binary_input),
-        .seg_output(seg_output)
-    );
-
-    // Test procedure
-    initial begin
-        // Initialize inputs
-        binary_input = 4'b0000;
-
-        // Apply test cases
-        #10 binary_input = 4'b0000; // Display 0
-        #10 binary_input = 4'b0001; // Display 1
-        #10 binary_input = 4'b0010; // Display 2
-        #10 binary_input = 4'b0011; // Display 3
-        #10 binary_input = 4'b0100; // Display 4
-        #10 binary_input = 4'b0101; // Display 5
-        #10 binary_input = 4'b0110; // Display 6
-        #10 binary_input = 4'b0111; // Display 7
-        #10 binary_input = 4'b1000; // Display 8
-        #10 binary_input = 4'b1001; // Display 9
-        #10 $stop;
-    end
-
-    // Monitor outputs
-    initial begin
-        $monitor("Time=%0t | binary_input=%b | seg_output=%b", $time, binary_input, seg_output);
-    end
+  // Test cases
+  initial begin
+    // Monitor changes in inputs and output
+    $monitor("s1 = %b, s0 = %b, a = %b, b = %b, c = %b, d = %b, y = %b", s1, s0, a, b, c, d, y);
+    
+    // Apply test vectors
+    s1 = 0; s0 = 0; a = 1; b = 0; c = 0; d = 0; #10;  // Test case 1
+    s1 = 0; s0 = 1; a = 0; b = 1; c = 0; d = 0; #10;  // Test case 2
+    s1 = 1; s0 = 0; a = 0; b = 0; c = 1; d = 0; #10;  // Test case 3
+    s1 = 1; s0 = 1; a = 0; b = 0; c = 0; d = 1; #10;  // Test case 4
+    
+    // Finish simulation
+    $finish;
+  end
 endmodule
+OUTPUT:![TESTBENCH7SEGMENT](https://github.com/user-attachments/assets/daed9e59-d6e8-4085-9f2b-88fa2b5d0019)
 
 Conclusion
 In this experiment, a seven-segment display driver was successfully designed and simulated using Verilog HDL. The simulation results confirmed that the display correctly represented the digits 0 to 9 based on the 4-bit binary input. The testbench effectively verified the functionality of the seven-segment display by applying various input combinations and observing the corresponding segment outputs. This experiment highlights how Verilog HDL can be used to control hardware components like a seven-segment display in digital systems.
